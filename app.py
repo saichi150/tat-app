@@ -2,40 +2,49 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import os
-import base64
 
 # アプリのタイトルと設定
 st.set_page_config(page_title="TAT 管理アプリ", layout="centered")
 
-# 背景画像の設定（ライブ写真を背景に）
-# 画像のURLを直接指定するか、GitHubにアップした画像を使います
-bg_image_url = "https://raw.githubusercontent.com/saichi150/tat-app/main/12278(2).jpg" # ファイル名が違う場合は修正してください
+# 背景画像のURL（あなたのGitHubから直接読み込む設定です）
+bg_image_url = "https://raw.githubusercontent.com/saichi150/tat-app/main/12278.jpg"
 
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{bg_image_url}");
-        background-attachment: fixed;
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                    url("{bg_image_url}");
         background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }}
-    /* タイトルを白にする */
+    /* タイトルを白く、影をつけて読みやすくする */
     h1 {{
         color: white !important;
         font-family: 'Arial Black', sans-serif;
         text-shadow: 2px 2px 4px #000000;
+        text-align: center;
+        padding-top: 20px;
     }}
-    /* 入力フォームを見やすく白背景にする */
+    /* 入力フォームの背景を白くして入力しやすくする */
     .stForm {{
         background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 10px;
+        border-radius: 15px;
         padding: 20px;
+    }}
+    /* 残高表示の文字色 */
+    .stMetric {{
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 10px;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# タイトル（ギター絵文字を削除）
 st.title("THINK ABOUT TODAY 管理")
 
 # データの読み込み設定
@@ -65,16 +74,13 @@ with st.expander("➕ 新規入力を追加", expanded=True):
             st.success("記録しました！")
             st.rerun()
 
-# --- 残高計算と表示 ---
+# --- 残高計算 ---
 total_in = df[df["タイプ"] == "入金"]["金額"].sum()
 total_out = df[df["タイプ"] == "出金"]["金額"].sum()
 balance = total_in - total_out
 
-st.markdown(f"<h3 style='color: white;'>現在の口座残高: ¥{balance:,}</h3>", unsafe_allow_html=True)
+st.metric(label="現在の口座残高（概算）", value=f"¥{balance:,}")
 
 # --- 履歴の表示 ---
 st.subheader("📊 入出金履歴")
 st.dataframe(df.iloc[::-1], use_container_width=True)
-
-
-
