@@ -8,7 +8,6 @@ st.set_page_config(page_title="TAT 管理アプリ", layout="centered")
 
 # 背景画像の設定（直接URLを指定）
 bg_image_url = "https://raw.githubusercontent.com/saichi150/tat-app/main/12278.jpeg"
-
 st.markdown(
     f"""
     <style>
@@ -73,4 +72,5 @@ st.metric(label="現在の口座残高", value=f"¥{balance:,}")
 # --- 履歴 ---
 st.subheader("📊 入出金履歴")
 st.dataframe(df.iloc[::-1], use_container_width=True)
+
 
