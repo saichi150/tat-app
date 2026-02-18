@@ -6,7 +6,7 @@ import os
 # アプリのタイトルと設定
 st.set_page_config(page_title="TAT 管理アプリ", layout="centered")
 
-# 背景画像のURL（あなたのGitHubから直接読み込む設定です）
+# 背景画像の設定（直接URLを指定）
 bg_image_url = "https://raw.githubusercontent.com/saichi150/tat-app/main/12278.jpg"
 
 st.markdown(
@@ -19,35 +19,25 @@ st.markdown(
         background-position: center;
         background-attachment: fixed;
     }}
-    /* タイトルを白く、影をつけて読みやすくする */
     h1 {{
         color: white !important;
         font-family: 'Arial Black', sans-serif;
         text-shadow: 2px 2px 4px #000000;
         text-align: center;
-        padding-top: 20px;
     }}
-    /* 入力フォームの背景を白くして入力しやすくする */
     .stForm {{
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 15px;
         padding: 20px;
-    }}
-    /* 残高表示の文字色 */
-    .stMetric {{
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 10px;
-        border-radius: 10px;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# タイトル（ギター絵文字を削除）
 st.title("THINK ABOUT TODAY 管理")
 
-# データの読み込み設定
+# データの読み込み
 FILE_NAME = "data.csv"
 if not os.path.exists(FILE_NAME):
     df = pd.DataFrame(columns=["日付", "タイプ", "項目", "金額"])
@@ -74,13 +64,12 @@ with st.expander("➕ 新規入力を追加", expanded=True):
             st.success("記録しました！")
             st.rerun()
 
-# --- 残高計算 ---
+# --- 残高表示 ---
 total_in = df[df["タイプ"] == "入金"]["金額"].sum()
 total_out = df[df["タイプ"] == "出金"]["金額"].sum()
 balance = total_in - total_out
+st.metric(label="現在の口座残高", value=f"¥{balance:,}")
 
-st.metric(label="現在の口座残高（概算）", value=f"¥{balance:,}")
-
-# --- 履歴の表示 ---
+# --- 履歴 ---
 st.subheader("📊 入出金履歴")
 st.dataframe(df.iloc[::-1], use_container_width=True)
